@@ -317,7 +317,7 @@ class Emulator(object):
         self.logger.debug('got pointer at `%s`' % repr(str(packed)))        
         return int(packed.encode('hex'), 16)
     def writeMemory(self, from_, bytesValue):
-        bytesValue = applyByteSubstitution(bytesValue)
+        bytesValue = self.applyByteSubstitution(bytesValue)
         self.emulatorHelper.writeMemory(self.getAddress(from_), bytesValue)
     
     def updateUI(self):

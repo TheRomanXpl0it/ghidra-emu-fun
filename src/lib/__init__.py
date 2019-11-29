@@ -1,6 +1,6 @@
 import libc6
-import gdba
+import gb
 exports = [
     libc6,
-    gdba
+    gb
 ]
