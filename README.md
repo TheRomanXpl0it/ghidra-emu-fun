@@ -15,11 +15,23 @@ Open a binary in Ghidra and run emulate_function.py from the script manager.
 
 You should see a new window with a button and a text field. Usually we dock the "console" window right above the emulator plugin window so we can get an experience closer to normal debuggers.
 
+
+## Roadmap
+
+So here are the next things that we are going to work on:
+
+- Better documentation and tutorials
+- Richer library of implemented hooks
+- Maybe syscall modelling (but don't count of that)
+- Better handling of symbols and types (especially with regards to hooks)
+- Implement default behaviour for pcode user ops
+  - Add instruction hooks
+
 ## Technical Curiosities
 
 ### Hooks
 
-So Sleight allows great flexibility when defining the P-code translation of an instruction, as such there can be code fragments that Ghidra cannot emulate correctly.
+So Sleigh allows great flexibility when defining the P-code translation of an instruction, as such there can be code fragments that Ghidra cannot emulate correctly.
 
 We added function hooking to allow the emulation of dynamically linked binaries and bypassing of functions with unsupported P-code instructions.
 
@@ -54,16 +66,6 @@ Since the signature of puts is `int puts(char *p)` when the emulation hits the h
 
 For a dynamically linked binary, the plugin will try automatically to match any import against the functions that have been implemented in lib.
 
-## Roadmap
-
-So here are the next things that we are going to work on:
-
-- Better documentation and tutorials
-- Richer library of implemented hooks
-- Maybe syscall modelling (but don't count of that)
-- Better handling of symbols and types (especially with regards to hooks)
-- Implement default behaviour for pcode user ops
-  - Add instruction hooks
 ## Contributors
 
 This repository was created from a flattened version of the original repository that we used for CSAW ESC, so the activity shown on GitHub may not reflect the actual contributions made by our team members.
