@@ -7,7 +7,17 @@ This repo hosts a Ghidra script that offers a frontend for Ghidra P-code emulato
 
 The mission of this project is making the emulation of a function as fun as possible.
 
-# Contributors
+## Roadmap
+
+So here are the next things that we are going to work on:
+
+- Better documentation and tutorials
+- Richer library of implemented hooks
+- Maybe syscall modelling (but don't count of that)
+- Better handling of symbols and types (especially with regards to hooks)
+- Implement default behaviour for pcode user ops
+  - Add instruction hooks
+## Contributors
 
 This repository was created from a flattened version of the original repository that we used for CSAW ESC, so the activity shown on GitHub may not reflect the actual contributions made by our team members.
 
