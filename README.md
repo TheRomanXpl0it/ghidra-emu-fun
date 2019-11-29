@@ -50,7 +50,7 @@ There are some interesting ideas that we need to complete: at the moment the Dat
 
 Currently values will be converted to byte strings and pointers will be converted into [NativePointers](https://github.com/TheRomanXpl0it/ghidra-emu-fun/blob/master/src/lib/hooks.py#L8) which serve to mediate memory read and writes to the emulator.
 
-Since the signature of puts is `int puts(char *p)` when the emulation hits the hook, the plugin will wrap the relevant portion of memory into a NativePointe (e.g. on Linux x86-64, p will be a NativePointer with base address equal to rdi, but on ARM32 the base address will be r0).
+Since the signature of puts is `int puts(char *p)` when the emulation hits the hook, the plugin will wrap the relevant portion of memory into a NativePointer (e.g. on Linux x86-64, p will be a NativePointer with base address equal to rdi, but on ARM32 the base address will be r0).
 
 For a dynamically linked binary, the plugin will try automatically to match any import against the functions that have been implemented in lib.
 
