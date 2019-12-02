@@ -3,6 +3,7 @@ from ghidra.app.plugin import ProgramPlugin
 from ghidra.app.script import GhidraState
 from ghidra.program.util import ProgramSelection
 from ghidra.program.model.address import AddressSet
+from ghidra.util.exception import CancelledException
 
 from gui import EmulatorComponentProvider
 from emulator import Emulator, EmulatorState
@@ -56,13 +57,16 @@ class EmulatorPlugin(ProgramPlugin):
         return "%s" % state.currentProgram.getFunctionManager().getFunctionContaining(state.getCurrentAddress())
 
     def doStart(self):
-        self.state = self.getGhidraState()
-        self.component.setStatus("Initializing @ %s" % self.getCurrentFn())
-        self.initEmulator()
-        self.emulator.initFunctionParameters()
-        self.emulator.start()
-        self.syncView()
-        self.component.setStatus("Started @ %s" % self.getCurrentFn())
+        try:
+            self.state = self.getGhidraState()
+            self.component.setStatus("Initializing @ %s" % self.getCurrentFn())
+            self.initEmulator()
+            self.emulator.initFunctionParameters()
+            self.emulator.start()
+            self.syncView()
+            self.component.setStatus("Started @ %s" % self.getCurrentFn())
+        except CancelledException:
+            pass
     
     def initEmulator(self, state=None):
         self.emulator = self.getEmulator(state)
