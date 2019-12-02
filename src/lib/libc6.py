@@ -41,7 +41,7 @@ def strcmp(s1, s2):
         c2 = s2[i]
         if c1 != c2:
             return 1 if c1 > c2 else -1
-        if c1 == 0:
+        if c1 == "\x00":
             return 0
         i += 1
 
