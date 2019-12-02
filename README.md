@@ -75,3 +75,6 @@ I would like to thank [matteojug](https://github.com/matteojug) for large refact
 I also want to thank [pietroborrello](https://github.com/pietroborrello), [CristianRichie](https://github.com/CristianRichie) and [B4dSheeP](https://github.com/B4dSheeP) for testing the emulator.
 
 Finally I would like to thank [andreafioraldi](https://github.com/andreafioraldi) for the precious feedback.
+
+Also for submitting pull requests:
+- [astrelsky](https://github.com/astrelsky)
