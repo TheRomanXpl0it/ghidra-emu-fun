@@ -20,17 +20,34 @@ def exit(code):
 
 @hooks.args
 def puts(p):
-    s = []
-    i = 0
-    logger.debug('reading:`{}`'.format(i))
-    while p[i] != '\x00' and i < 1000:
-        s.append(p[i])
-        i += 1
-        logger.debug('reading:`{}`'.format(i))
-    logger.info('puts: {}'.format(repr(''.join(s))))
+    s = p.readCString()
+    logger.info('puts: {}'.format(repr(s)))
     return 1
+
+@hooks.args
+def memcmp(mem1, mem2, size):
+    for i in xrange(size):
+        c1 = mem1[i]
+        c2 = mem2[i]
+        if c1 != c2:
+            return 1 if c1 > c2 else -1
+    return 0
+
+@hooks.args
+def strcmp(s1, s2):
+    i = 0
+    while True:
+        c1 = s1[i]
+        c2 = s2[i]
+        if c1 != c2:
+            return 1 if c1 > c2 else -1
+        if c1 == 0:
+            return 0
+        i += 1
 
 exports = [
     puts,
     exit,
+    memcmp,
+    strcmp
 ]

@@ -2,38 +2,12 @@ import sys
 sys.path.append("..")
 from functools import wraps
 from ghidra.app.decompiler import DecompInterface
+from ghidra.program.model.address import Address
 from utils import *
+
+from native_pointer import isPointerType, unpackInt, NativePointer
+
 function_arguments_cache = {}
-
-class NativePointer():
-    def __init__(self, address, parameter, emulator):
-        self.emulator = emulator
-        self.parameter = parameter
-        self.pointed_type = parameter.getDataType().getDataType()
-        self.address = emulator.getAddress(emulator.readPointer(address))
-        emulator.logger.debug('NativePointer at address %s' % str(self.address))
-
-    def __setitem__(self, key, item):
-        # assert(type(key) == int)
-        self.emulator.emulatorHelper.writeMemory(self.address.add(key * self.pointed_type.getLength()), item)
-    
-    def __getitem__(self, key):
-        # todo interpret the bytes recursively
-        # assert(type(key) == int)
-        self.emulator.logger.debug('reading %d bytes from %s at %d' % (self.pointed_type.getLength(), self.address, key))
-        self.emulator.logger.debug('reading %d bytes from %s at %d' % (self.pointed_type.getLength(), self.address.add(key * self.pointed_type.getLength()), key))
-        ret = bytearray(0)
-        ret.extend(self.emulator.emulatorHelper.readMemory(self.address.add(key * self.pointed_type.getLength()), self.pointed_type.getLength()))
-        self.emulator.logger.debug('reading `%s` at %d' % (repr(ret), key))
-        return str(ret)
-    def __repr__(self):
-        return '<NativePointer(address=`%s`, pointed_type=`%s`)>' % (self.address, self.pointed_type)
-
-def isPointer(dataType):
-    return 'getDataType' in dir(dataType)        
-
-def isCString(dataType):
-    return isPointer(dataType) and 'char' in dataType.getDataType()
 
 def getVarnodeAddress(varnode, emulator):
     if varnode.getAddress().isStackAddress():
@@ -51,42 +25,18 @@ def getParamBytes(parameter, emulator):
         else:
             content.extend(emulator.emulatorHelper.readMemory(varnode.getAddress(), varnode.getSize()))
     emulator.logger.debug("got a nice content `%s`" % (repr(content)))
-
     return content
 
-
-
-signed_format = {
-    2: 'h',
-    4: 'i',
-    8: 'q'
-}
-unsigned_format = {
-    2: 'h',
-    4: 'i',
-    8: 'q'
-}
-unsigned_types = set([
-'uint', 'ulong', 'ushort'
-])
-
-signed_types = set([
-    'int', 'long', 'short'
-])
-integer_types = unsigned_types.union(signed_types)
-import struct
 def getParam(parameter, emulator, monitor):
     dataType = parameter.getDataType()
-    if isPointer(dataType):
+    if isPointerType(dataType):
         address = getVarnodeAddress(parameter.getStorage().getVarnodes()[0], emulator)
         emulator.logger.debug('parameter is at %s' % str(address))
-        return NativePointer(address, parameter, emulator)
+        return NativePointer(address, parameter.getDataType(), emulator)
     content = getParamBytes(parameter, emulator)
-    typeName = parameter.getDataType().getName()
-    if typeName in integer_types and len(content) in signed_format:
-        emulator.logger.debug('parameter is with type %s the content is %d bytes' % (typeName, len(content)))
-        struct_format = ('>' if emulator.program.getLanguage().isBigEndian() else '<') + ((signed_format if typeName in signed_types else unsigned_format)[len(content)])
-        return struct.unpack(struct_format, str(content))[0]
+    r = unpackInt(content, parameter.getDataType(), emulator.program.getLanguage().isBigEndian())
+    if r is not None:
+        return r
     return content
 
 def args(func):
@@ -118,10 +68,13 @@ def args(func):
             emulator.logger.debug('Finish execution of hook %s with return value %s' % (func.__name__, repr(retval)))
             pointerSize = emulator.program.getLanguage().getProgramCounter().getBitLength()//8
             
-            if type(retval) == int or type(retval) == long:
+            if isinstance(retval, (Address, NativePointer)):
+                retval = retval.getOffset()
+            if isinstance(retval, (int, long)):
                 retval = long_to_bytes(retval, pointerSize)
                 if not emulator.program.getLanguage().isBigEndian():
                     retval = retval[::-1]
+
             offset = 0
             for varnode in function.getReturn().getVariableStorage().getVarnodes():
                 emulator.emulatorHelper.writeMemory(varnode.getAddress(), retval[offset:offset+varnode.getSize()])
