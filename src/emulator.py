@@ -317,7 +317,7 @@ class Emulator(object):
         self.logger.debug('got pointer at `%s`' % repr(str(packed)))        
         return int(packed.encode('hex'), 16)
     def writeMemory(self, from_, bytesValue):
-        bytesValue = applyByteSubstitution(bytesValue)
+        bytesValue = self.applyByteSubstitution(bytesValue)
         self.emulatorHelper.writeMemory(self.getAddress(from_), bytesValue)
     
     def updateUI(self):
@@ -346,8 +346,7 @@ class Emulator(object):
     @history
     def cmdHook(self, cmd):
         '''hook address module.function - replace a function with a python implementation
-        e.g. hook 0x40000 libc6.puts
-        '''
+\te.g. hook 0x40000 libc6.puts'''
         address = self.getAddress(int(cmd[1], 16))
         library_name, function_name = cmd[2].split('.')
         thunkedFunction = self.program.getFunctionManager().getFunctionContaining(address)
