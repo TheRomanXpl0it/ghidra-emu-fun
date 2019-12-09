@@ -464,27 +464,3 @@ class Emulator(object):
 _printable = set(string.printable)
 def isPrintable(s):
     return sum(map(lambda x: 1 if x in _printable else 0, s)) > len(s) * 3//4
-
-"""
-gcmd = ""
-def solveOnce(byte, CMDS=None):    
-    global gcmd
-    returnValue = function.getReturn()
-    value = '<not found>'
-    if returnValue.isStackVariable():
-        value = emulatorHelper.readStackValue(returnValue.getStackOffset(), returnValue.getLength())
-    elif returnValue.isMemoryVariable():
-        raise Exception('MemoryVariable `{}` not implemented'.format(returnValue))
-    elif returnValue.isRegisterVariable():
-        value = emulatorHelper.readRegister(returnValue.getRegister())
-    else:
-        print('Unsupported returnValue detected')
-    logger.info('Found value `{}` for `{}`'.format(value, returnValue.name))
-    logger.info('======== Test case finish {} ========'.format(byte))
-
-# BF the right way
-# for i in range(256):
-#     if solveOnce(('??','??'), CMDS="b 17b0, b 189c, c, w 0x7ffeffa4 {}, r 0x7ffeffa4 4, c, r 0x7ffeff80 32, ret".format(chr(i).encode("hex"))) == "703224f765d313ee4ed0fadcf9d63a5e":
-#         print "Solved:",i
-#         break
-# exit(1)
