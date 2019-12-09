@@ -200,7 +200,7 @@ class Emulator(object):
         self.logger.debug('Stack address at {} or {}'.format(address, orAddress))
         return orAddress
 
-    def writeStackValue(offset, size, value):
+    def writeStackValue(self, offset, size, value):
         bytesValue = long_to_bytes(value, size)
         if not self.emulatorHelper.getLanguage().isBigEndian():
             bytesValue = bytesValue[::-1]
