@@ -9,6 +9,8 @@ The mission of this project is making the emulation of a function as fun as poss
 
 ## Quick Start
 
+Download Ghidra 9.1.2
+
 To install this script, clone the repository and add the src directory to the Script Manager.
 
 Open a binary in Ghidra and run emulate_function.py from the script manager.
