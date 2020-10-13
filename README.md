@@ -20,6 +20,8 @@ You should see a new window with a button and a text field. Usually we dock the 
 
 ## Roadmap
 
+There will probably be a new release after CSAW ESC 2020 (late November) with some of the items below
+
 So here are the next things that we are going to work on:
 
 - Better documentation and tutorials
